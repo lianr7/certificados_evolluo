@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificado Evolluo</title>
+    <style>
+        .container {
+            height: 70vh;
+            width: 720px;
+            background-image: url(https://cdn.weweb.io/designs/b377741d-a5f8-4c89-ab3d-462aed2a3109/sections/certificado_modelo_whitelabel.png?_wwcv=1730402851175);
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        .button-spacing {
+            margin-top: 40px;
+        }
+        .container_pai {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            width: 100vw;
+            height: 100vh;
+            background-color: whitesmoke;
+        }
+        .h1_text {
+            font-size: 25px;
+            color: purple;
+            margin-top: 50px;
+        }
+    </style>  
+</head>
+<body>
+
+    <div class="container_pai">
+        <div class="container">
+            <h1 class="h1_text">Nome do aluno</h1>
+        </div>
+        <button onclick="gerarPdf()" class="button-spacing">Clique Aqui</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        // Obtém o parâmetro 'curso' da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const curso = urlParams.get('curso') || 'Curso';
+
+        async function gerarPdf() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: 'landscape',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            // Parâmetros recebidos
+            const empresa = 'https://weweb-production.s3.amazonaws.com/designs/b377741d-a5f8-4c89-ab3d-462aed2a3109/files/aprendeai_evolluo_novo2024.png'; // Exemplo: 'https://exemplo.com/logo.png'
+            const aluno = 'Braian Costa Neto';
+            const data = '01/11/2024';
+            const curso = 'Curso A1';
+
+            // URL da imagem do certificado (pode ser substituída pela URL da sua imagem)
+            const imageUrl = 'https://cdn.weweb.io/designs/b377741d-a5f8-4c89-ab3d-462aed2a3109/sections/certificado_modelo_whitelabel.png?_wwcv=1730402851175';
+
+            // Carrega a imagem e converte para base64
+            const img = await fetch(imageUrl)
+                .then(res => res.blob())
+                .then(blob => new Promise(resolve => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.readAsDataURL(blob);
+                }));
+
+            // Adiciona a imagem de fundo ao PDF (preenchendo a página)
+            doc.addImage(img, 'PNG', 0, 0, 297, 210);
+
+            doc.setFontSize(12);
+            doc.setFont("times", "normal");
+            doc.text(data, 45, 192); // Data de conclusão
+
+            // Salva o PDF com o nome dinâmico
+            doc.save(`certificado ${curso}.pdf`);
+        }
+    </script>
+</body>
+</html>
