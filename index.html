@@ -6,18 +6,16 @@
     <title>Certificado Evolluo</title>
     <style>
         .container {
-            height: 70vh;
-            width: 720px;
+            height: 600px;
+            width: 849px;
             background-image: url(https://cdn.weweb.io/designs/b377741d-a5f8-4c89-ab3d-462aed2a3109/sections/certificado_modelo_whitelabel.png?_wwcv=1730402851175);
             background-size: cover;
             display: flex;
-            align-items: center;
             justify-content: center;
             flex-direction: column;
+            position: static;           
         }
-        .button-spacing {
-            margin-top: 40px;
-        }
+        
         .container_pai {
             display: flex;
             justify-content: center;
@@ -25,22 +23,77 @@
             flex-direction: column;
             width: 100vw;
             height: 100vh;
-            background-color: whitesmoke;
+            background-color: whitesmoke;            
         }
-        .h1_text {
+
+        .button-spacing {
+            margin-top: 40px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            border-radius: 8px;
+            background-color: #0088ff;
+            color: #fff;
+            border: 0px;
+            cursor: pointer;
+        }
+
+        .h1_aluno {
+            font-family:Verdana, Geneva, Tahoma, sans-serif;
             font-size: 25px;
-            color: purple;
-            margin-top: 50px;
+            color: black;
+            margin-top: -120px;
+            width: 698px;
+            margin-left: 76px;
+            height: 114px;
+            text-align: center;
+            position: absolute;
         }
+
+        .h1_curso {
+            font-family:Verdana, Geneva, Tahoma, sans-serif;
+            font-size: 20px;
+            color: black;
+            margin-top: 60px;
+            margin-left: 212px;
+            max-width: 562px;
+            height: 85px;
+            text-align: center;
+            position: absolute;
+        }
+
+        .p_data {
+            font-family:Verdana, Geneva, Tahoma, sans-serif;
+            font-size: 16px;
+            color: black;
+            font-weight: bold;
+            margin-top: 500px;
+            margin-left: 120px;
+            position: absolute;
+        }
+
+        .logotipo {
+            max-width: 208px;
+            max-height: 68px;
+            position: absolute;
+            margin-bottom: 480px;
+            margin-left: 70px;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
     </style>  
 </head>
 <body>
 
     <div class="container_pai">
         <div class="container">
-            <h1 class="h1_text">Nome do aluno</h1>
+            <img src="https://weweb-production.s3.amazonaws.com/designs/b377741d-a5f8-4c89-ab3d-462aed2a3109/files/aprendeai_evolluo_novo2024.png" alt="" class="logotipo">
+            <h1 class="h1_aluno">Lian Rodrigues Santos</h1>
+            <h1 class="h1_curso">Curso de Competências Colaborativas em Anexo III</h1>
+            <p class="p_data">12/12/2024</p>
         </div>
-        <button onclick="gerarPdf()" class="button-spacing">Clique Aqui</button>
+        <button onclick="gerarPdf()" class="button-spacing">Baixar Certificado</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -58,13 +111,7 @@
                 format: 'a4'
             });
 
-            // Parâmetros recebidos
-            const empresa = 'https://weweb-production.s3.amazonaws.com/designs/b377741d-a5f8-4c89-ab3d-462aed2a3109/files/aprendeai_evolluo_novo2024.png'; // Exemplo: 'https://exemplo.com/logo.png'
-            const aluno = 'Braian Costa Neto';
-            const data = '01/11/2024';
-            const curso = 'Curso A1';
-
-            // URL da imagem do certificado (pode ser substituída pela URL da sua imagem)
+                    // URL da imagem de fundo
             const imageUrl = 'https://cdn.weweb.io/designs/b377741d-a5f8-4c89-ab3d-462aed2a3109/sections/certificado_modelo_whitelabel.png?_wwcv=1730402851175';
 
             // Carrega a imagem e converte para base64
@@ -76,12 +123,30 @@
                     reader.readAsDataURL(blob);
                 }));
 
-            // Adiciona a imagem de fundo ao PDF (preenchendo a página)
+            // Adiciona a imagem de fundo ao PDF
             doc.addImage(img, 'PNG', 0, 0, 297, 210);
 
-            doc.setFontSize(12);
-            doc.setFont("times", "normal");
-            doc.text(data, 45, 192); // Data de conclusão
+            // ** Configurações Dinâmicas **
+            const aluno = "Lian Rodrigues Santos";
+            const curso = "Curso de Competências Colaborativas em Anexo III Participação de Execução Penal por Razão Social";
+            const data = "12/12/2024";
+
+            // ** Configuração de Fonte **
+            doc.setFont("Verdana", "bold");
+            doc.setTextColor(0, 0, 0); // Preto
+
+            // ** Nome do Aluno **
+            doc.setFontSize(25);
+            doc.text(aluno, 148.5, 110, { align: "center", maxWidth: 300}); // Centralizado horizontalmente (X: 148.5 mm)
+
+            // ** Nome do Curso **
+            doc.setFontSize(20);
+            doc.text(curso, 148.5, 125, {align: "center" });
+
+            // ** Data de Conclusão **
+            doc.setFontSize(16);
+            doc.setFont("Verdana", "bold");
+            doc.text(data, 45, 192); // Posição exata com base no CSS do HTML
 
             // Salva o PDF com o nome dinâmico
             doc.save(`certificado ${curso}.pdf`);
