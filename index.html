@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Certificado Evolluo</title>
+    <title>Certificado Empresa</title>
     <style>
         .container {
             height: 600px;
@@ -13,9 +14,9 @@
             display: flex;
             justify-content: center;
             flex-direction: column;
-            position: static;           
+            position: static;
         }
-        
+
         .container_pai {
             display: flex;
             justify-content: center;
@@ -23,7 +24,7 @@
             flex-direction: column;
             width: 100vw;
             height: 100vh;
-            background-color: whitesmoke;            
+            background-color: whitesmoke;
         }
 
         .button-spacing {
@@ -39,7 +40,7 @@
         }
 
         .h1_aluno {
-            font-family:Verdana, Geneva, Tahoma, sans-serif;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
             font-size: 25px;
             color: black;
             margin-top: -120px;
@@ -51,7 +52,7 @@
         }
 
         .h1_curso {
-            font-family:Verdana, Geneva, Tahoma, sans-serif;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
             font-size: 20px;
             color: black;
             margin-top: 60px;
@@ -63,7 +64,7 @@
         }
 
         .p_data {
-            font-family:Verdana, Geneva, Tahoma, sans-serif;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
             font-size: 16px;
             color: black;
             font-weight: bold;
@@ -73,35 +74,76 @@
         }
 
         .logotipo {
-            max-width: 208px;
-            max-height: 68px;
+            max-width: 264.6px;
+            max-height: 75.6px;
             position: absolute;
             margin-bottom: 480px;
             margin-left: 70px;
             background-size: cover;
             background-repeat: no-repeat;
         }
-
-    </style>  
+    </style>
 </head>
+
 <body>
 
     <div class="container_pai">
         <div class="container">
-            <img src="https://weweb-production.s3.amazonaws.com/designs/b377741d-a5f8-4c89-ab3d-462aed2a3109/files/aprendeai_evolluo_novo2024.png" alt="" class="logotipo">
-            <h1 class="h1_aluno">Lian Rodrigues Santos</h1>
-            <h1 class="h1_curso">Curso de Competências Colaborativas em Anexo III</h1>
-            <p class="p_data">12/12/2024</p>
+            <img src="" alt="" class="logotipo">
+            <h1 class="h1_aluno">Nome do Aluno</h1>
+            <h1 class="h1_curso">Nome do Curso</h1>
+            <p class="p_data">Data do Certificado</p>
         </div>
         <button onclick="gerarPdf()" class="button-spacing">Baixar Certificado</button>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+        integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script>
-        // Obtém o parâmetro 'curso' da URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const curso = urlParams.get('curso') || 'Curso';
+
+        // Função para converter URL em Base64
+        async function urlParaBase64(url) {
+            try {
+                const response = await fetch(url);
+                const blob = await response.blob();
+                return await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.onerror = () => reject('Erro ao converter para Base64');
+                    reader.readAsDataURL(blob);
+                });
+            } catch (error) {
+                console.error('Erro ao processar a URL:', error);
+            }
+        }
+
+        // Atualiza os elementos HTML e manipula o logo
+        async function atualizarCertificado() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const curso = urlParams.get('curso') || 'Nome do Curso';
+            const aluno = urlParams.get('aluno') || 'Nome do Aluno';
+            const data = urlParams.get('data') || 'Data do Certificado';
+            const logo = urlParams.get('logo') || '';
+
+            // Atualiza textos
+            document.querySelector('.h1_aluno').textContent = aluno;
+            document.querySelector('.h1_curso').textContent = curso;
+            document.querySelector('.p_data').textContent = data;
+
+            // Atualiza o logo (se fornecido)
+            if (logo) {
+                const base64Logo = await urlParaBase64(logo);
+                const imgElement = document.querySelector('.logotipo');
+                imgElement.src = base64Logo;
+            }
+        }
+
+        // Chama a função para atualizar o certificado
+        atualizarCertificado();
+
+
 
         async function gerarPdf() {
             const { jsPDF } = window.jspdf;
@@ -111,25 +153,28 @@
                 format: 'a4'
             });
 
-                    // URL da imagem de fundo
+            // URL da imagem de fundo
             const imageUrl = 'https://cdn.weweb.io/designs/b377741d-a5f8-4c89-ab3d-462aed2a3109/sections/certificado_modelo_whitelabel.png?_wwcv=1730402851175';
+            const logoUrl = new URLSearchParams(window.location.search).get('logo') || 'https://weweb-production.s3.amazonaws.com/designs/b377741d-a5f8-4c89-ab3d-462aed2a3109/files/aprendeai_evolluo_novo2024.png';
 
-            // Carrega a imagem e converte para base64
-            const img = await fetch(imageUrl)
-                .then(res => res.blob())
-                .then(blob => new Promise(resolve => {
-                    const reader = new FileReader();
-                    reader.onload = () => resolve(reader.result);
-                    reader.readAsDataURL(blob);
-                }));
+            // Carrega a imagem de fundo e o logo em base64
+            const backgroundBase64 = await urlParaBase64(imageUrl);
+            const logoBase64 = await urlParaBase64(logoUrl);
 
             // Adiciona a imagem de fundo ao PDF
-            doc.addImage(img, 'PNG', 0, 0, 297, 210);
+            doc.addImage(backgroundBase64, 'PNG', 0, 0, 297, 210);
 
-            // ** Configurações Dinâmicas **
-            const aluno = "Lian Rodrigues Santos";
-            const curso = "Curso de Competências Colaborativas em Anexo III Participação de Execução Penal por Razão Social";
-            const data = "12/12/2024";
+            // Adiciona o logotipo
+            doc.addImage(logoBase64, 'PNG', 24, 14, 70, 20); // Ajuste a posição (X, Y) e o tamanho (largura, altura)
+
+            const urlParams = new URLSearchParams(window.location.search);    
+
+            //** Configurações Dinâmicas **
+            const aluno = urlParams.get('aluno') || 'Nome do Aluno';
+
+            const data = urlParams.get('data') || '00/00/0000';
+
+            const curso = urlParams.get('curso') || 'Nome do curso';
 
             // ** Configuração de Fonte **
             doc.setFont("Verdana", "bold");
@@ -137,20 +182,25 @@
 
             // ** Nome do Aluno **
             doc.setFontSize(25);
-            doc.text(aluno, 148.5, 110, { align: "center", maxWidth: 300}); // Centralizado horizontalmente (X: 148.5 mm)
+            doc.text(aluno, 140, 68, { align: "center", maxWidth: 180 }); // Centralizado horizontalmente (X: 148.5 mm)
 
-            // ** Nome do Curso **
-            doc.setFontSize(20);
-            doc.text(curso, 148.5, 125, {align: "center" });
+            // Divide o texto em linhas de no máximo 300px
+            const cursoLines = doc.splitTextToSize(curso, 165);
+
+            // Adiciona o texto centralizado na posição desejada
+            doc.text(cursoLines, 168.5, 102, { align: "center" });
 
             // ** Data de Conclusão **
             doc.setFontSize(16);
             doc.setFont("Verdana", "bold");
-            doc.text(data, 45, 192); // Posição exata com base no CSS do HTML
+            doc.text(data, 41, 191); // Posição exata com base no CSS do HTML
 
             // Salva o PDF com o nome dinâmico
             doc.save(`certificado ${curso}.pdf`);
         }
+
     </script>
+
 </body>
+
 </html>
